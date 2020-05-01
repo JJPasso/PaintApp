@@ -1,5 +1,5 @@
 import {TOOL_LINE, TOOL_RECTANGLE, TOOL_CIRCLE, TOOL_BRUSH,
-     TOOL_BUCKET, TOOL_ERASER, TOOL_PENCIL, TOOL_TRIANGLE} from './tool.js';
+     TOOL_BUCKET, TOOL_ERASER, TOOL_PENCIL, TOOL_TRIANGLE, TOOL_STICKER} from './tool.js';
 import Paint from './paint.class.js';
 
 var paint = new Paint("canvas");
@@ -8,6 +8,14 @@ paint.lineWidth = 1;
 paint.brushSize = 8;
 paint.selectedColor = "#000000";
 paint.init();
+
+var miimagen = new Image();
+miimagen.src = "imagen/mesa.png";
+miimagen.onload = function (){
+    paint.context.drawImage(miimagen,0,0,1280,720);
+}
+
+
 
 document.querySelectorAll("[data-command").forEach(
     item => {
@@ -23,6 +31,9 @@ document.querySelectorAll("[data-command").forEach(
                 link.download = "my-image.png";
                 link.href = image;
                 link.click();
+            }else if(command === 'clear'){
+                paint.clearCanvas();
+                paint.context.drawImage(miimagen,0,0,1280,720);
             }
         });
     }
@@ -47,6 +58,7 @@ document.querySelectorAll("[data-tool]").forEach(
                     document.querySelector(".group.for-shapes").style.display = "block";
                     // es invisible pincel tamaño
                     document.querySelector(".group.for-bursh").style.display = "none";
+                    document.querySelector(".group.stickers").style.display = "none";
                     break;
                 case TOOL_BRUSH:
                 case TOOL_ERASER:
@@ -54,9 +66,16 @@ document.querySelectorAll("[data-tool]").forEach(
                     document.querySelector(".group.for-bursh").style.display = "block";
                     // invisible los tamaños del grupo de figuras
                     document.querySelector(".group.for-shapes").style.display = "none";
+                    document.querySelector(".group.stickers").style.display = "none";
+                    break;
+                case TOOL_STICKER:
+                    document.querySelector(".group.stickers").style.display = "block";
+                    document.querySelector(".group.for-shapes").style.display = "none";
+                    document.querySelector(".group.for-bursh").style.display = "none";
                     break;
                 default:
                     // hace invisible el both
+                    document.querySelector(".group.stickers").style.display = "none";
                     document.querySelector(".group.for-shapes").style.display = "none";
                     document.querySelector(".group.for-bursh").style.display = "none";
             }
@@ -98,6 +117,19 @@ document.querySelectorAll("[data-color]").forEach(
             let color = item.getAttribute("data-color");
 
             paint.selectedColor = color;
+        });
+    }
+);
+
+document.querySelectorAll("[data-sticker]").forEach(
+    item => {
+        item.addEventListener("click", e => {
+            document.querySelector("[data-sticker]").classList.toggle("active");
+           /* item.classList.toggle("active");*/
+
+            let sticker = item.getAttribute("data-sticker");
+
+            paint.selectedSticker = sticker;
         });
     }
 );

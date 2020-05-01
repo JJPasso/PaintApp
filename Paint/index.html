@@ -8,8 +8,19 @@
     <script src="js/app.js" type="module" defer></script>
 </head>
 <body>
+    <header class="header">
+        <div class="container">
+            <img src="imagen/nav.png">
+        </div>
+    </header>
     <div class="toolbox left">
+        <div class="espacio">
+            <img src="imagen/espacio.png">
+        </div>
         <div class="group commands">
+            <div class="item" data-command="clear" title="Reiniciar">
+                <img src="imagen/clear.png">
+            </div>
             <div class="item" data-command="undo" title="Atras">
                 <img src="imagen/atras.png">
             </div>
@@ -74,28 +85,76 @@
             </div>
         </div>
     </div>
-    <canvas id="canvas" width="640" height="480"></canvas>
+    
+    <canvas id="canvas" width="1280" height="720" ></canvas>
+    
+    
     <div class="toolbox right">
+        <div class="espacio">
+            <img src="imagen/espacio.png">
+        </div>
+        <div class="group activador">
+            <div class="item" data-tool="stickers" title="Coleccion de Stickers">
+                <img src="imagen/stickers.png">
+            </div>
+        </div>
+        <div class="group stickers" style="display: none;">
+            <div class="item" data-sticker="pepa" title="pepapick">
+                <img src="imagen/pepa.png">
+            </div> 
+        </div>
         <div class="group swatches">
-            <div class="item" data-color="#ffffff">
-                <div class="swatch" style="background-color: #ffffff;"></div>
+            <div class="item" data-color="#fbdfeb">
+                <div class="swatch" style="background-color: #fbdfeb;"></div>
             </div>
-            <div class="item active" data-color="#000000">
-                <div class="swatch" style="background-color: #000000;"></div>
+            <div class="item active" data-color="#f8b8d3">
+                <div class="swatch" style="background-color: #f8b8d3;"></div>
             </div>
-            <div class="item" data-color="#fd94f8">
-                <div class="swatch" style="background-color: #fd94f8;"></div>
+            <div class="item" data-color="#a2dadb">
+                <div class="swatch" style="background-color: #a2dadb;"></div>
             </div>
-            <div class="item" data-color="#f808e4">
-                <div class="swatch" style="background-color: #f808e4;"></div>
+            <div class="item" data-color="#cae9eb">
+                <div class="swatch" style="background-color: #cae9eb;"></div>
             </div>
-            <div class="item" data-color="#df3173">
-                <div class="swatch" style="background-color: #df3173;"></div>
+            <div class="item" data-color="#f7f0e6">
+                <div class="swatch" style="background-color: #f7f0e6;"></div>
             </div>
-            <div class="item" data-color="#75fa8b">
-                <div class="swatch" style="background-color: #75fa8b;"></div>
+            <div class="item" data-color="#d6b5d0">
+                <div class="swatch" style="background-color: #d6b5d0;"></div>
+            </div>
+            <div class="item" data-color="#cbe3c3">
+                <div class="swatch" style="background-color: #cbe3c3;"></div>
+            </div>
+            <div class="item" data-color="#d6e48f">
+                <div class="swatch" style="background-color: #d6e48f;"></div>
+            </div>
+            <div class="item" data-color="#eb949d">
+                <div class="swatch" style="background-color: #eb949d;"></div>
+            </div>
+            <div class="item" data-color="#f3cada">
+                <div class="swatch" style="background-color: #f3cada;"></div>
+            </div>
+            <div class="item" data-color="#cdbcb5">
+                <div class="swatch" style="background-color: #cdbcb5;"></div>
+            </div>
+            <div class="item" data-color="#efe0dd">
+                <div class="swatch" style="background-color: #efe0dd;"></div>
+            </div>
+            <div class="item" data-color="#f9f3e5">
+                <div class="swatch" style="background-color: #f9f3e5;"></div>
+            </div>
+            <div class="item" data-color="#e0e0e2">
+                <div class="swatch" style="background-color: #e0e0e2;"></div>
+            </div>
+            <div class="item" data-color="#c3cbce">
+                <div class="swatch" style="background-color: #c3cbce;"></div>
             </div>
         </div>
     </div>
+    <footer class="footer">
+        <div class="container">
+            <p>La utilizacion de esta aplicacion es de uso reservado solo para La Petit Boutique Pastry © - Copyright 2020</p>
+        </div>
+    </footer>
 </body>
 </html>

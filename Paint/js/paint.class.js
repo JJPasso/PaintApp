@@ -1,20 +1,28 @@
 import Point from './point.model.js';
 import Fill from './fill.js';
 import {TOOL_LINE, TOOL_RECTANGLE, TOOL_CIRCLE, TOOL_BRUSH,
-    TOOL_BUCKET, TOOL_ERASER, TOOL_PENCIL, TOOL_TRIANGLE} from './tool.js';
+    TOOL_BUCKET, TOOL_ERASER, TOOL_PENCIL, TOOL_TRIANGLE, TOOL_STICKER} from './tool.js';
 import { getMouseCoordsOnCanvas, findDistance }  from './utility.js';
 
 export default class Paint{
 
     constructor(canvasId){
         this.canvas = document.getElementById(canvasId);
+        
         this.context = canvas.getContext("2d");
+        
         this.undoStack = [];
         this.undoLimit = 3;
+        this.foto = {x: 50, y: 50, w: 100, h: 100};
+        this.isUp = null;
     }
 
     set activeTool(tool){
         this.tool = tool;
+    }
+
+    set selectedSticker(sticker){
+        this.sticker = sticker;
     }
 
     set lineWidth(linewidth){
@@ -46,6 +54,7 @@ export default class Paint{
         document.onmouseup = e => this.onMouseUp(e);
 
         this.starPos = getMouseCoordsOnCanvas(e, this.canvas);
+     
 
         if(this.tool == TOOL_PENCIL || this.tool == TOOL_BRUSH ){
             this.context.beginPath();
@@ -55,11 +64,48 @@ export default class Paint{
         }else if(this.tool == TOOL_ERASER){
             this.context.clearRect(this.starPos.x, this.starPos.y, 
                 this._brushSize, this._brushSize);
+        }else if(this.tool == TOOL_STICKER){
+            var miimagen = new Image();
+            miimagen.src = this.buscarSticker(this.sticker);
+            this.drawImage(miimagen,this.foto.w,this.foto.h);
+            
+        console.log(this.starPos.x, this.starPos.y);
+
+        if (this.starPos.x >= this.foto.w - 5 + this.foto.x
+            && this.starPos.x <= this.foto.w + this.foto.x + 5
+            && this.starPos.y >= this.foto.h / 2 + this.foto.y - 5
+            && this.starPos.y <= this.foto.h / 2 + this.foto.y + 5
+        ) {
+            this.isUp = 'right';
+        }
+
+        else if (this.starPos.x >= this.foto.w / 2 + this.foto.x - 5
+            && this.starPos.x <= this.foto.w / 2 + this.foto.x + 5
+            && this.starPos.y >= this.foto.h + this.foto.y - 5
+            && this.starPos.y <= this.foto.h + this.foto.y + 5
+        ) {
+            this.isUp = 'bottom';
+        }
+
+        else if (this.starPos.x >= this.foto.w + this.foto.x - 5
+            && this.starPos.x <= this.foto.w + this.foto.x + 5
+            && this.starPos.y >= this.foto.h + this.foto.y - 5
+            && this.starPos.y <= this.foto.h + this.foto.y + 5
+        ) {
+            this.isUp = 'bottom-right';
+        }
+
+        else if (this.starPos.x >= this.foto.x - 5 && this.starPos.x <= this.foto.x + 5
+            && this.starPos.y >= this.foto.y - 5 && this.starPos.y <= this.foto.y + 5
+        ) {
+            this.isUp = 'top-left';
+        }
         }
     }
 
     onMouseMove(e){
         this.currentPos = getMouseCoordsOnCanvas(e, this.canvas);
+        
 
         switch(this.tool){
             case TOOL_LINE:
@@ -77,6 +123,39 @@ export default class Paint{
             case TOOL_ERASER:
                 this.context.clearRect(this.currentPos.x, this.currentPos.y, 
                     this._brushSize,this._brushSize);
+                break;
+            case TOOL_STICKER:
+                var miimagen = new Image();
+                miimagen.src = this.buscarSticker(this.sticker);
+                if (this.isUp === 'right') {
+                    this.foto.w = this.currentPos.x - this.foto.x;
+                    /*this.context.clearRect(0, 0, 900, 600);*/
+                    this.drawImage(miimagen, this.foto.w, this.foto.h);
+                }
+        
+                else if (this.isUp === 'bottom') {
+                    this.foto.h = this.currentPos.y - this.foto.y;
+                    this.context.clearRect(0, 0, 900, 600);
+                    this.drawImage(miimagen, this.foto.w, this.foto.h);
+                }
+        
+                else if (this.isUp === 'bottom-right') {
+                    this.foto.w = this.currentPos.x - this.foto.x;
+                    this.foto.h = this.currentPos.y - this.foto.y;
+                    /*this.context.clearRect(0, 0, 900, 600);*/
+                    this.drawImage(miimagen, this.foto.w, this.foto.h);
+                }
+        
+                else if (this.isUp === 'top-left') {
+                    var dx = this.foto.x - this.currentPos.x;
+                    var dy = this.foto.y - this.currentPos.y;
+                    this.foto.x = this.currentPos.x;
+                    this.foto.y = this.currentPos.y;
+                    this.foto.w += dx;
+                    this.foto.h += dy;
+                    /*this.context.clearRect(0, 0, 900, 600);*/
+                    this.drawImage(miimagen, this.foto.w, this.foto.h);
+                }
             default:
                 break;
         }
@@ -85,6 +164,8 @@ export default class Paint{
     onMouseUp(e){
         this.canvas.onmousemove = null;
         document.onmouseup = null;
+        this.isUp = null;
+        /*this.isDragging = false;*/
     }
 
     drawShape(){
@@ -123,5 +204,37 @@ export default class Paint{
         }else{
             alert("no undo available");
         }
+    }
+
+    clearCanvas(){
+        this.context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    buscarSticker(sticker){
+        if(sticker == 'pepa'){
+            return "http://upload.wikimedia.org/wikipedia/commons/d/d2/Svg_example_square.svg";
+        }
+    }
+
+    drawImage(image, w, h) {
+        this.context.drawImage(image, this.foto.x, this.foto.y, w, h);
+
+        this.context.fillStyle = 'black';
+
+        this.context.beginPath();
+        this.context.arc(this.foto.x, this.foto.y, 5, 0, Math.PI * 2, 1);
+        this.context.fill();
+
+        this.context.beginPath();
+        this.context.arc(w + this.foto.x, h / 2 + this.foto.y, 5, 0, Math.PI * 2, 1);
+        this.context.fill();
+
+        this.context.beginPath();
+        this.context.arc(w / 2 + this.foto.x, h + this.foto.y, 5, 0, Math.PI * 2, 1);
+        this.context.fill();
+
+        this.context.beginPath();
+        this.context.arc(w + this.foto.x, h + this.foto.y, 5, 0, Math.PI * 2, 1);
+        this.context.fill();
     }
 }
